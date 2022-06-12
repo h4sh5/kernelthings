@@ -60,7 +60,7 @@ Optionally, if you know the options you want to change (say you stumbled upon so
 
 Now you're ready to run `time make -j8` or `time make -j16` or however many cpu cores you have `make -j$(nproc)`
 
-> Pro tip: if you're on a hard disk drive, copy all the files over to a SSD (Solid State Drive), or better, if you have around 8G of RAM (which you probably will on a modern setup), copy all files over to `/dev/shm` and compile it there for max speed (because all the files will be directly in memory! They just won't be available when rebooting so make sure you save your changes/artifacts. Don't copy the `.git` repo if you want to save space.
+> Pro tip: if you're on a hard disk drive, copy all the files over to a SSD (Solid State Drive), or better, if you have around 8G of RAM (which you probably will on a modern setup), copy all files over to `/dev/shm` and compile it there for max speed (because all the files will be directly in memory! They just won't be available when rebooting so make sure you save your changes/artifacts. Don't copy the `.git` repo if you want to save space. The difference between compiling on my SSD and in `/dev/shm` was around 33 minutse vs 10 minutes.
 
 If you're on x86 your compiled kernel can be found in `arch/x86/boot/bzImage` inside your linux repo root
 
@@ -119,3 +119,34 @@ uid=0(root) gid=0(root) groups=0(root)
 root@(none):/# 
 
 ```
+
+
+## Extra resources
+
+### Links
+
+Some nice tips straight from kernel.log: https://www.kernel.org/doc/html/latest/kernel-hacking/hacking.html
+
+If you want to start making drivers: https://linuxhint.com/linux-device-driver-tutorial/
+
+Github book on linux internals: https://github.com/0xAX/linux-insides
+
+Dive into some (potential) security bugs: https://syzkaller.appspot.com/
+
+High quality linux news and blogs: https://lwn.net/
+
+Mailing lists (Linux development is heavily driven around mailing lists, each sub-project/component has its own list): http://vger.kernel.org/vger-lists.html
+
+Archive of mailing lists: https://lore.kernel.org/lists.html
+
+The Linux Kernel Mailing List (LKML) FAQ: http://vger.kernel.org/lkml/
+
+
+
+
+### Books
+
+Linux Kernel Development by Robert Love
+
+Linux Kernel Networking: Implementation and Theory by Rami Rosen
+
