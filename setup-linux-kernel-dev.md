@@ -74,9 +74,7 @@ Luckily our good friends over at Debian has a `qcow2` image we can use. It can u
 
 After downloading that, you can spin up your qemu VM:
 
-```sh
-qemu-kvm -hda ~/Downloads/debian-11-generic-amd64.qcow2  -kernel arch/x86/boot/bzImage -append "console=ttyS0 root=/dev/sda1 init=/bin/bash" -serial stdio -no-reboot -display none -m 1G
-````
+`qemu-kvm -hda ~/Downloads/debian-11-generic-amd64.qcow2  -kernel arch/x86/boot/bzImage -append "console=ttyS0 root=/dev/sda1 init=/bin/bash" -serial stdio -no-reboot -display none -m 1G`
 
 the boot options specified in `-append`:
 - `console=ttyS0` shows console output in the first serial tty, and allows you to interact with the kernel via inputs
