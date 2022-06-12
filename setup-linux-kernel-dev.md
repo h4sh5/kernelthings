@@ -60,7 +60,7 @@ Optionally, if you know the options you want to change (say you stumbled upon so
 
 Now you're ready to run `time make -j8` or `time make -j16` or however many cpu cores you have `make -j$(nproc)`
 
-> Pro tip: if you're on a hard disk drive, copy all the files over to a SSD (Solid State Drive), or better, if you have more than 10GB of RAM (which you probably will on a modern setup), copy all files over to `/dev/shm` and compile it there for max speed (because all the files will be directly in memory! They just won't be available when rebooting so make sure you save your changes/artifacts. Don't copy the `.git` repo if you want to save space.
+> Pro tip: if you're on a hard disk drive, copy all the files over to a SSD (Solid State Drive), or better, if you have around 8G of RAM (which you probably will on a modern setup), copy all files over to `/dev/shm` and compile it there for max speed (because all the files will be directly in memory! They just won't be available when rebooting so make sure you save your changes/artifacts. Don't copy the `.git` repo if you want to save space.
 
 If you're on x86 your compiled kernel can be found in `arch/x86/boot/bzImage` inside your linux repo root
 
