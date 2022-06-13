@@ -216,6 +216,78 @@ Booting it up again:
 
 We see our hello world message in the boot logs, looking nice like the other ones!
 
+## Generating a patch
+
+Say you would like to submit this useless change to the Linux kernel, you must first generate a patch. Luckily, this functionality is already baked into git (because it was kind of invented around linux development!)
+
+First let's branch out from the current branch we are on and commit the change:
+
+```sh
+git branch hack
+git commit -m'hello world'
+```
+
+Note that if you are doing this for real you should have a better commit message that is precise and describes your change.
+
+Now we can generate a patch email:
+
+`git format-patch -1 HEAD`
+
+The `-1` tells git how many commits to include in the patch (in this case 1)
+
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+It will output `0001-hello-world.patch`, which is the patch file generated:
+
+```
+$ cat 0001-hello-world.patch 
+From 1929db0d882106de573490b8baaf8164ee62ccde Mon Sep 17 00:00:00 2001
+From: John Doe <john.doe@example.com>
+Date: Mon, 1 Jun 2022 10:33:21 +0000
+Subject: [PATCH] hello world
+
+---
+ init/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/main.c b/init/main.c
+index 65fa2e41a..0421e68a0 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1510,6 +1510,7 @@ static int __ref kernel_init(void *unused)
+ 	exit_boot_config();
+ 	free_initmem();
+ 	mark_readonly();
++	pr_info("Hello world!\n");
+ 
+ 	/*
+ 	 * Kernel mappings are now finalized - update the userspace page-table
+-- 
+2.36.1
+
+```
+
+Alternatively, if you don't want to generate an email and just want a diff patch, just diff your current HEAD against the previous commit/tag in `git log`:
+
+```
+$ git diff v5.17
+diff --git a/init/main.c b/init/main.c
+index 65fa2e41a..0421e68a0 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1510,6 +1510,7 @@ static int __ref kernel_init(void *unused)
+        exit_boot_config();
+        free_initmem();
+        mark_readonly();
++       pr_info("Hello world!\n");
+ 
+        /*
+         * Kernel mappings are now finalized - update the userspace page-table
+```
+
+To see how to *actually* submit patches to the linux kernel, see https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+
 ## Extra resources
 
 ### Links
