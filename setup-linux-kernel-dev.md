@@ -120,6 +120,101 @@ root@(none):/#
 
 ```
 
+## Making a change - hello world
+
+Obviously, adding a print hello world message into the kernel is not a real 'change' and we are doing this just for fun. No one should ever submit a useless patch like that.
+
+But for the sake of making a change and seeing if things happen, let's do it!
+
+So (part of) the kernel start up code is in `init/main.c`. If we browse this file we see a function	called `kernel_init` - that's where we will add our hello world.
+
+It starts like this:
+
+```c
+
+static int __ref kernel_init(void *unused)
+{
+	int ret;
+
+	/*
+	 * Wait until kthreadd is all set-up.
+	 */
+	wait_for_completion(&kthreadd_done);
+
+	kernel_init_freeable();
+	/* need to finish all async __init code before freeing the memory */
+	async_synchronize_full();
+
+	system_state = SYSTEM_FREEING_INITMEM;
+	kprobe_free_init_mem();
+	ftrace_free_init_mem();
+	kgdb_free_init_mem();
+	exit_boot_config();
+	free_initmem();
+	mark_readonly();
+
+	/*
+	 * Kernel mappings are now finalized - update the userspace page-table
+	 * to finalize PTI.
+	 */
+	pti_finalize();
+
+	... (snipped)
+```
+
+It's always good practise to look around the file and see what other code looks like, in order to immitate existing code and keep things looking consistent.
+
+For example, we see a couple examples of printing things in the same file:
+
+```c
+panic("%s: Failed to allocate %zu bytes\n", __func__, len); // that looks bad, don't want to kernel panic
+
+pr_info("Run %s as init process\n", init_filename); // that looks nice!
+
+pr_debug("  with arguments:\n"); // is debugging on? will this print if not?
+
+pr_warn("Kernel memory protection not selected by kernel config.\n"); // so this must be a warning
+
+// that looks like an error, lets not do that
+if (ret && ret != -ENOENT) {
+		pr_err("Starting init: %s exists but couldn't execute it (error %d)\n",
+		       init_filename, ret);
+	}
+
+```
+
+So it looks like the most "appropriate" print statement for a hello world is `pr_info`. Let's add this into kernel_init:
+
+(around line 1513 at the time of writing in kernel 5.17, but can change)
+
+```c
+	exit_boot_config();
+	free_initmem();
+	mark_readonly();
+	pr_info("Hello world!\n"); // <- here's our hello world
+
+	/*
+	 * Kernel mappings are now finalized - update the userspace page-table
+	 * to finalize PTI.
+	 */
+	pti_finalize();
+
+	system_state = SYSTEM_RUNNING;
+	numa_default_policy();
+```
+
+Now let's recompile the kernel with `time make -j8` - only took < 30 seconds this time because we already compiled most of the kernel and only the changed bits has to be recompiled.
+
+Booting it up again:
+
+```
+[    3.358701] Freeing unused kernel image (text/rodata gap) memory: 2032K
+[    3.360064] Freeing unused kernel image (rodata/data gap) memory: 1208K
+[    3.360381] Hello world!
+[    3.360890] Run /bin/bash as init process
+```
+
+We see our hello world message in the boot logs, looking nice like the other ones!
 
 ## Extra resources
 
